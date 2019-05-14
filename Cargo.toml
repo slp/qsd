@@ -1,0 +1,17 @@
+[package]
+name = "qsd"
+version = "0.1.0"
+description = "QEMU Storage Daemon written in Rust"
+authors = ["Sergio Lopez <slp@redhat.com>"]
+edition = "2018"
+license = "Apache-2.0"
+
+[dependencies]
+clap = "2.33.0"
+env_logger = "0.5.12"
+epoll = ">=4.0.1"
+libc = ">=0.2.39"
+log = "0.4.6"
+
+vhostuser_rs = { git = "https://github.com/slp/vhostuser_rs" }
+vhost-user-blk = { git = "https://github.com/slp/vhost-user-blk" }
