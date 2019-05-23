@@ -3,18 +3,20 @@
 
 use std::collections::HashMap;
 use std::mem;
-use std::os::unix::io::AsRawFd;
+use std::os::unix::io::{AsRawFd, RawFd};
 use std::process::exit;
 use std::sync::mpsc::{channel, Receiver, Sender};
 use std::sync::{Arc, Mutex};
 use std::thread;
+use std::time::Instant;
 
 use clap::{crate_authors, crate_version, App, Arg};
 use log::{debug, error, info};
 use vhost_user_blk::backend_raw::StorageBackendRaw;
-use vhost_user_blk::block::{VhostUserBlk, Vring};
+use vhost_user_blk::block::VhostUserBlk;
 use vhost_user_blk::eventfd::EventFd;
 use vhost_user_blk::message::*;
+use vhost_user_blk::vring::{Vring, VringFd};
 use vhostuser_rs::SlaveListener;
 
 const EVENT_SLAVE_IDX: u64 = 0;
@@ -31,14 +33,14 @@ struct VringWorkerEndpoint {
 }
 
 struct VringWorker {
-    vring: Vring<StorageBackendRaw>,
+    vring: Arc<Mutex<Vring<StorageBackendRaw>>>,
     eventfd: EventFd,
     receiver: Receiver<VringWorkerMsg>,
 }
 
 impl VringWorker {
     fn new(
-        vring: Vring<StorageBackendRaw>,
+        vring: Arc<Mutex<Vring<StorageBackendRaw>>>,
         eventfd: EventFd,
         receiver: Receiver<VringWorkerMsg>,
     ) -> Self {
@@ -49,9 +51,14 @@ impl VringWorker {
         }
     }
 
+    fn get_kick_fd(&self) -> RawFd {
+        let vring = self.vring.lock().unwrap();
+        vring.get_fd(VringFd::Kick).unwrap()
+    }
+
     fn run(&mut self) {
         let epoll_raw_fd = epoll::create(true).expect("Can't create epoll ofd");
-        let kick_fd = self.vring.get_kick_fd();
+        let kick_fd = self.get_kick_fd();
 
         epoll::ctl(
             epoll_raw_fd,
@@ -82,6 +89,7 @@ impl VringWorker {
                 let idx = event.data as u64;
                 match idx {
                     EVENT_SLAVE_IDX => {
+                        debug!("worker slave_idx");
                         let mut buf: u64 = 0;
                         unsafe {
                             libc::read(
@@ -91,10 +99,26 @@ impl VringWorker {
                             )
                         };
 
-                        if self.vring.process_queue().unwrap() {
-                            match self.vring.signal_guest() {
-                                Ok(_) => (),
-                                Err(err) => error!("error signaling guest: {:?}", err),
+                        let start_time = Instant::now();
+                        loop {
+                            let mut vring = self.vring.lock().unwrap();
+                            let before_queue = Instant::now();
+                            let ret = vring.process_queue().unwrap();
+                            info!(
+                                "process_queue: {}ns, requests={}",
+                                Instant::now().duration_since(before_queue).as_nanos(),
+                                ret
+                            );
+                            if ret {
+                                match vring.signal_guest() {
+                                    Ok(_) => (),
+                                    Err(err) => error!("error signaling guest: {:?}", err),
+                                }
+                            }
+
+                            let now = Instant::now();
+                            if now.duration_since(start_time).as_micros() > 30 {
+                                break;
                             }
                         }
                     }

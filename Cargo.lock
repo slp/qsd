@@ -133,7 +133,7 @@ dependencies = [
  "epoll 4.1.0 (registry+https://github.com/rust-lang/crates.io-index)",
  "libc 0.2.54 (registry+https://github.com/rust-lang/crates.io-index)",
  "log 0.4.6 (registry+https://github.com/rust-lang/crates.io-index)",
- "vhost-user-blk 0.1.0 (git+https://github.com/slp/vhost-user-blk)",
+ "vhost-user-blk 0.1.0",
  "vhostuser_rs 0.1.0 (git+https://github.com/slp/vhostuser_rs)",
 ]
 
@@ -238,7 +238,6 @@ source = "registry+https://github.com/rust-lang/crates.io-index"
 [[package]]
 name = "vhost-user-blk"
 version = "0.1.0"
-source = "git+https://github.com/slp/vhost-user-blk#e0cbed67dadb8850b3c41acb8d119f88c6adf283"
 dependencies = [
  "env_logger 0.5.13 (registry+https://github.com/rust-lang/crates.io-index)",
  "epoll 4.1.0 (registry+https://github.com/rust-lang/crates.io-index)",
@@ -247,13 +246,13 @@ dependencies = [
  "nix 0.13.0 (registry+https://github.com/rust-lang/crates.io-index)",
  "vhostuser_rs 0.1.0 (git+https://github.com/slp/vhostuser_rs)",
  "virtio-bindings 0.1.0 (git+https://github.com/slp/virtio-bindings)",
- "vm-memory 0.1.0 (git+https://github.com/rust-vmm/vm-memory)",
+ "vm-memory 0.1.0",
 ]
 
 [[package]]
 name = "vhostuser_rs"
 version = "0.1.0"
-source = "git+https://github.com/slp/vhostuser_rs#d000675fa874cdf17a9201bc8448d2f30fb27de7"
+source = "git+https://github.com/slp/vhostuser_rs#577e424e549790f164cf338d9d17599cc1894c1f"
 dependencies = [
  "bitflags 1.0.4 (registry+https://github.com/rust-lang/crates.io-index)",
  "libc 0.2.54 (registry+https://github.com/rust-lang/crates.io-index)",
@@ -268,7 +267,6 @@ source = "git+https://github.com/slp/virtio-bindings#81677a2c988665651d3628d1471
 [[package]]
 name = "vm-memory"
 version = "0.1.0"
-source = "git+https://github.com/rust-vmm/vm-memory#8d0147d16818dfcd238b9161df003cc082a10069"
 dependencies = [
  "libc 0.2.54 (registry+https://github.com/rust-lang/crates.io-index)",
 ]
@@ -345,10 +343,8 @@ dependencies = [
 "checksum unicode-width 0.1.5 (registry+https://github.com/rust-lang/crates.io-index)" = "882386231c45df4700b275c7ff55b6f3698780a650026380e72dabe76fa46526"
 "checksum utf8-ranges 1.0.2 (registry+https://github.com/rust-lang/crates.io-index)" = "796f7e48bef87609f7ade7e06495a87d5cd06c7866e6a5cbfceffc558a243737"
 "checksum vec_map 0.8.1 (registry+https://github.com/rust-lang/crates.io-index)" = "05c78687fb1a80548ae3250346c3db86a80a7cdd77bda190189f2d0a0987c81a"
-"checksum vhost-user-blk 0.1.0 (git+https://github.com/slp/vhost-user-blk)" = "<none>"
 "checksum vhostuser_rs 0.1.0 (git+https://github.com/slp/vhostuser_rs)" = "<none>"
 "checksum virtio-bindings 0.1.0 (git+https://github.com/slp/virtio-bindings)" = "<none>"
-"checksum vm-memory 0.1.0 (git+https://github.com/rust-vmm/vm-memory)" = "<none>"
 "checksum void 1.0.2 (registry+https://github.com/rust-lang/crates.io-index)" = "6a02e4885ed3bc0f2de90ea6dd45ebcbb66dacffe03547fadbb0eeae2770887d"
 "checksum winapi 0.3.7 (registry+https://github.com/rust-lang/crates.io-index)" = "f10e386af2b13e47c89e7236a7a14a086791a2b88ebad6df9bf42040195cf770"
 "checksum winapi-i686-pc-windows-gnu 0.4.0 (registry+https://github.com/rust-lang/crates.io-index)" = "ac3b87c63620426dd9b991e5ce0329eff545bccbbb34f3be09ff6fb6ab51b7b6"
