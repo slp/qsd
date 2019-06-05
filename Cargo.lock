@@ -420,7 +420,7 @@ source = "registry+https://github.com/rust-lang/crates.io-index"
 [[package]]
 name = "vhost-user-blk"
 version = "0.1.0"
-source = "git+https://github.com/slp/vhost-user-blk#2ad6202f79b25c6cae865481d3daa128924bc460"
+source = "git+https://github.com/slp/vhost-user-blk#d9883bb4b90080c969a4c4654ac68cad54bc9b7e"
 dependencies = [
  "bitflags 1.0.4 (registry+https://github.com/rust-lang/crates.io-index)",
  "env_logger 0.5.13 (registry+https://github.com/rust-lang/crates.io-index)",

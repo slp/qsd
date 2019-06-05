@@ -235,6 +235,13 @@ fn main() {
                 .help("Keep polling the queue for this amount of time (default: 32000)"),
         )
         .arg(
+            Arg::with_name("queue_num")
+                .long("queue_num")
+                .short("q")
+                .takes_value(true)
+                .help("Number of queues (default: 1)"),
+        )
+        .arg(
             Arg::with_name("readonly")
                 .long("readonly")
                 .short("r")
@@ -271,6 +278,18 @@ fn main() {
         poll_ns = 32000u128;
     }
 
+    let queue_num: u16;
+    if cmd_args.is_present("queue_num") {
+        let queue_num_str = cmd_args
+            .value_of("queue_num")
+            .expect("Invalid queue_num value");
+        queue_num = queue_num_str
+            .parse::<u16>()
+            .expect("Invalid queue_num value");
+    } else {
+        queue_num = 1;
+    }
+
     let storage_backend = match StorageBackendRaw::new(disk_image_path, true, 0) {
         Ok(s) => s,
         Err(e) => {
@@ -286,7 +305,7 @@ fn main() {
         storage_backend,
         main_eventfd.try_clone().unwrap(),
         main_sender,
-        1,
+        queue_num,
     )));
     let mut slave_listener = SlaveListener::new(&socket_path, vub.clone())
         .expect("Can't create a slave listener instance");
