@@ -79,20 +79,19 @@ impl VringWorker {
     fn poll_queues<S: StorageBackend>(&mut self, backend: &mut S) {
         let mut vring = self.vring.lock().unwrap();
 
+        vring.disable_notifications();
         let mut start_time = Instant::now();
         loop {
             if vring.process_completions(backend).unwrap() || vring.process_queue(backend).unwrap()
             {
-                match vring.signal_guest() {
-                    Ok(_) => (),
-                    Err(err) => error!("error signaling guest: {:?}", err),
-                }
                 start_time = Instant::now();
             }
 
             if self.poll_ns == 0
                 || Instant::now().duration_since(start_time).as_nanos() > self.poll_ns
             {
+                vring.enable_notifications();
+                vring.process_queue(backend).unwrap();
                 break;
             }
         }
